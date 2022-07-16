@@ -27,6 +27,7 @@ void getNumsSeperatedWithComma(vector<int> &nums, string &s, string &delimeter)
     while ((pos = s.find(delimeter)) != string::npos)
     {
         string currNum = s.substr(0, pos);
+
         //// getting numbers seperated by newLine
         getNumsSeperatedWithNewLine(nums, currNum);
         s.erase(0, pos + delimeter.length());
@@ -36,16 +37,26 @@ void getNumsSeperatedWithComma(vector<int> &nums, string &s, string &delimeter)
     
 }
 
+void getDelemiter(string &s,string &delimeter){
+
+    if(s[0] == 47 && s[1] == 47){
+        delimeter = s[2];
+        s.erase(0, 5);
+    }
+    
+}
+
 int add(string &s)
 {
     if (s == "")
         return 0;
     vector<int> nums;
+    //// getting the delimeter
     string delimeter = ",";
+    getDelemiter(s, delimeter);
 
     //// getting numbers seperated by comma
     getNumsSeperatedWithComma(nums, s, delimeter);
-    
 
     return accumulate(nums.begin(), nums.end(), 0);
 }
