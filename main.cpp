@@ -12,12 +12,12 @@ void getNumsSeperatedWithNewLine(vector<int> &nums, string s)
         {
             string currNum = s.substr(0, i);
             nums.push_back(stoi(currNum));
-            s.erase(0, i+2);
-            getNumsSeperatedWithNewLine(nums,s);
+            s.erase(0, i + 2);
+            getNumsSeperatedWithNewLine(nums, s);
             break;
         }
     }
-    if(i == n)
+    if (i == n)
         nums.push_back(stoi(s));
 }
 
@@ -32,24 +32,42 @@ void getNumsSeperatedWithComma(vector<int> &nums, string &s, string &delimeter)
         getNumsSeperatedWithNewLine(nums, currNum);
         s.erase(0, pos + delimeter.length());
     }
-    
-    getNumsSeperatedWithNewLine(nums,s);
-    
+
+    getNumsSeperatedWithNewLine(nums, s);
 }
 
-void getDelemiter(string &s,string &delimeter){
+void checkNegativeNums(vector<int> &negNums, string &s, string &delimeter)
+{
+    size_t pos = 0;
+    while ((pos = s.find(delimeter)) != string::npos)
+    {
+        string currNum = s.substr(0, pos);
 
-    if(s[0] == 47 && s[1] == 47){
+        //// getting numbers seperated by newLine
+        getNumsSeperatedWithNewLine(negNums, currNum);
+        s.erase(0, pos + delimeter.length());
+    }
+
+    getNumsSeperatedWithNewLine(negNums, s);
+}
+
+void getDelemiter(string &s, string &delimeter)
+{
+
+    if (s[0] == 47 && s[1] == 47)
+    {
         delimeter = s[2];
         s.erase(0, 5);
     }
-    
 }
 
-int add(string &s)
+void add(string &s)
 {
     if (s == "")
-        return 0;
+    {
+        cout << 0 << endl;
+        return;
+    }
     vector<int> nums;
     //// getting the delimeter
     string delimeter = ",";
@@ -58,7 +76,39 @@ int add(string &s)
     //// getting numbers seperated by comma
     getNumsSeperatedWithComma(nums, s, delimeter);
 
-    return accumulate(nums.begin(), nums.end(), 0);
+    // return accumulate(nums.begin(), nums.end(), 0);
+    vector<int> negNums;
+    int sum = 0;
+    for (int i = 0; i < nums.size(); i++)
+    {
+        if (nums[i] < 0)
+        {
+            negNums.push_back(nums[i]);
+        }
+        else
+        {
+            sum += nums[i];
+        }
+    }
+    try
+    {
+        if (negNums.size() == 0)
+        {
+            cout << sum << endl;
+        }
+        else
+        {
+            throw ("negatives not allowed");
+        }
+    }
+    catch (const char* s)
+    {
+        cout << s << endl;
+        for(int i = 0; i < negNums.size(); i++){
+            cout << negNums[i] << endl;
+        }
+        exit(0);
+    }
 }
 
 int main()
@@ -66,7 +116,7 @@ int main()
     string s;
     getline(cin, s);
 
-    cout << add(s) << endl;
+    add(s);
 
     return 0;
 }
